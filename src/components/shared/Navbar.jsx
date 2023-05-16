@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 
 const Navbar = () => {
     return (
@@ -19,7 +19,9 @@ const Navbar = () => {
                 
                 {/* btn start */}
                 <div>
-                    <button className='btn btn-warning'>Post Job</button>
+                   <Link to='/addjob'>
+                   <button className='btn btn-warning'>Post Job</button>
+                   </Link>
                 </div>
             </div>
         </div>
