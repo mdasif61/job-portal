@@ -26,18 +26,27 @@ const Navbar = () => {
                 <div>
                     <NavLink className={({isActive})=>isActive?"text-orange-500 font-semibold text-lg mx-7 border-b-2 border-orange-500 px-2 py-1":"text-lg py-1 px-2 mx-7"} to='/'>Home</NavLink>
                     <NavLink className={({isActive})=>isActive?"text-orange-500 font-semibold text-lg mx-7 border-b-2 border-orange-500 px-2 py-1":"text-lg py-1 px-2 mx-7"} to='/myjob'>My Jobs</NavLink>
-                    {
-                        user?<><NavLink onClick={handleLogout} className={({isActive})=>isActive?"text-orange-500 font-semibold text-lg mx-7 border-b-2 border-orange-500 px-2 py-1":"text-lg py-1 px-2 mx-7"} to='/login'>LogOut</NavLink></>:<><NavLink className={({isActive})=>isActive?"text-orange-500 font-semibold text-lg mx-7 border-b-2 border-orange-500 px-2 py-1":"text-lg py-1 px-2 mx-7"} to='/login'>Login</NavLink></>
-                    }
                     {!user && <NavLink className={({isActive})=>isActive?"text-orange-500 font-semibold text-lg mx-7 border-b-2 border-orange-500 px-2 py-1":"text-lg py-1 px-2 mx-7"} to='/register'>Register</NavLink>}
                 </div>
                 {/* link end */}
                 
                 {/* btn start */}
                 <div>
-                   <Link to='/addjob'>
-                   <button className='btn btn-warning'>Post Job</button>
-                   </Link>
+                   {
+                    user?
+                    <>
+                    <NavLink onClick={handleLogout} className={({isActive})=>isActive?"text-orange-500 font-semibold text-lg mx-7 border-b-2 border-orange-500 px-2 py-1":"text-lg font-semibold py-1 px-2 mx-7"} to='/login'>LogOut</NavLink>
+                    <Link to='/addjob'>
+                    <button className='btn btn-warning'>Post Job</button>
+                    </Link>
+                    </>
+                    :
+                    <>
+                     
+                    <><NavLink className={({isActive})=>isActive?"text-orange-500 font-semibold text-lg mx-7 border-b-2 border-orange-500 px-2 py-1":"text-lg py-1 px-2 mx-7"} to='/login'>Login</NavLink></>
+                    
+                    </>
+                   }
                 </div>
             </div>
         </div>

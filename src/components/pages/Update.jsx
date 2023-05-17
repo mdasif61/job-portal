@@ -1,51 +1,55 @@
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import React, { useContext, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import CreatableSelect from "react-select/creatable";
-import "../css/AddJob.css";
-import Swal from 'sweetalert2'
+import { AuthContext } from './AuthProvider';
 
-const AddJob = () => {
-  const [selectOption, setSelectOption] = useState(null);
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm();
+const Update = ({modalJob,index}) => {
+    const [selectOption, setSelectOption] = useState(null);
+    const {user}=useContext(AuthContext)
+    const {
+        register,
+        handleSubmit,
+        watch,
+        formState: { errors },
+      } = useForm();
 
-  const onSubmit = (data) => {
-    data.skils = selectOption;
-    fetch('http://localhost:1000/postjob',{
-      method:'POST',
-      headers:{
-        'content-type':'application/json'
-      },
-      body:JSON.stringify(data)
-    })
-    .then(res=>res.json())
-    .then(data=>{
-      console.log(data)
-      
-    })
-  };
+      const onSubmit = (data) => {
+        data.skils = selectOption;
+        fetch(`http://localhost:1000/uniquejob/${modalJob._id}`,{
+          method:'PUT',
+          headers:{
+            'content-type':'application/json'
+          },
+          body:JSON.stringify(data)
+        })
+        .then(res=>res.json())
+        .then(data=>{
+          console.log(data)
+        })
+      };
 
-  const options = [
-    { value: "Javascript", label: "Javascript" },
-    { value: "C++", label: "C++" },
-    { value: "Python", label: "Python" },
-    { value: "HTML", label: "HTML" },
-    { value: "Css", label: "Css" },
-    { value: "React", label: "React" },
-    { value: "MongoDB", label: "MongoDB" },
-    { value: "Firebase", label: "Firebase" },
-  ];
+      const options = [
+        { value: "Javascript", label: "Javascript" },
+        { value: "C++", label: "C++" },
+        { value: "Python", label: "Python" },
+        { value: "HTML", label: "HTML" },
+        { value: "Css", label: "Css" },
+        { value: "React", label: "React" },
+        { value: "MongoDB", label: "MongoDB" },
+        { value: "Firebase", label: "Firebase" },
+      ];
 
-  return (
-    <div>
-      <div>
-        <div className="bg-gray-100 border-gray-200 border-2 p-10 rounded-xl my-10">
+    return (
+        <>
+        
+        <div>
+        <input type="checkbox" id="my-modal-3" className="modal-toggle" />
+      <div className='modal'>
+        <div className="bg-gray-100 modal-box relative border-gray-200 border-2 p-10 rounded-xl my-10">
+        <label htmlFor="my-modal-3" className="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="grid grid-cols-2 gap-6">
+            <h2 className='text-2xl text-orange-500 font-bold text-center mb-10'>Update Your Post</h2>
+            <div className="grid grid-cols-1 gap-6">
               <div>
                 <label htmlFor="title">Title</label>
                 <br />
@@ -54,6 +58,7 @@ const AddJob = () => {
                   type="text"
                   {...register("title")}
                   placeholder="Title"
+                  defaultValue={modalJob?.title}
                 />
               </div>
 
@@ -65,6 +70,7 @@ const AddJob = () => {
                   {...register("salary", { required: true })}
                   placeholder="Salary"
                   type="text"
+                  defaultValue={modalJob?.salary}
                 />
               </div>
 
@@ -72,10 +78,11 @@ const AddJob = () => {
                 <label htmlFor="vacancy">Vacancy</label>
                 <br />
                 <input
-                  className="h-12 py-2 px-4 border w-full"
+                  className="h-12 py-2 px-4 focus:outline-none border w-full"
                   type="number"
                   {...register("vacancy", { required: true })}
                   placeholder="Vacancy"
+                  defaultValue={modalJob?.vacancy}
                 />
               </div>
 
@@ -85,6 +92,7 @@ const AddJob = () => {
                 <select
                   className="h-12 w-full border focus:outline-none py-2 px-4"
                   {...register("category")}
+                  defaultValue={modalJob?.status}
                 >
                   <option value="Editor">Editor</option>
                   <option value="Writer">Writer</option>
@@ -123,6 +131,7 @@ const AddJob = () => {
                   className="h-12 border focus:outline-none w-full py-2 px-4"
                   type="date"
                   {...register("date")}
+                  defaultValue={modalJob?.date}
                 />
               </div>
 
@@ -134,6 +143,7 @@ const AddJob = () => {
                   type="email"
                   placeholder="email"
                   {...register("email")}
+                  value={user?.email}
                 />
               </div>
 
@@ -160,15 +170,16 @@ const AddJob = () => {
             </div>
 
             <input
-              className="btn btn-primary btn-block my-5"
+              className="btn btn-block my-5"
               type="submit"
-              value="Post Job"
+              value="Update Job"
             />
           </form>
         </div>
       </div>
     </div>
-  );
+        </>
+    );
 };
 
-export default AddJob;
+export default Update;

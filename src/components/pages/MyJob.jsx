@@ -1,10 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "./AuthProvider";
+import Update from "./Update";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCoffee, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
 
 const MyJob = () => {
   const { user } = useContext(AuthContext);
   const [myjobs, setMyjob] = useState([]);
-  const [text,setText]=useState()
+  const [text, setText] = useState()
+  const [modalJob,setModalJob]=useState({})
 
   useEffect(() => {
     fetch(`http://localhost:1000/myjob/${user?.email}`)
@@ -14,12 +18,33 @@ const MyJob = () => {
       });
   }, [user?.email]);
 
-  const searchPost=()=>{
+  const searchPost = () => {
     fetch(`http://localhost:1000/searchByTitle/${text}`)
-    .then(res=>res.json())
-    .then(data=>{
+      .then(res => res.json())
+      .then(data => {
         setMyjob(data)
+      })
+  }
+
+  const handleModalId=(id)=>{
+    fetch(`http://localhost:1000/uniquejob/${id}`)
+      .then(res => res.json())
+      .then(data => {
+        setModalJob(data)
+      })
+  }
+
+  const handleDelete=(id)=>{
+    fetch(`http://localhost:1000/uniquejob/${id}`,{
+      method:'DELETE'
     })
+      .then(res => res.json())
+      .then(data => {
+        if(data.deletedCount>0){
+          const remain=myjobs.filter(job=>job._id!==id)
+          setMyjob(remain)
+        }
+      })
   }
 
   return (
@@ -30,7 +55,7 @@ const MyJob = () => {
 
       <div className="flex justify-between">
         <input
-            onChange={(e)=>setText(e.target.value)}
+          onChange={(e) => setText(e.target.value)}
           className="focus:outline-none focus:border-2 flex-1 mr-2 border h-12 py-2 px-4 rounded-full"
           type="text"
           placeholder="Search Your Post"
@@ -49,8 +74,8 @@ const MyJob = () => {
               <th>Category</th>
               <th>Vacancy</th>
               <th>Salary</th>
-              <th>Edit</th>
-              <th>Action</th>
+              <th className="text-center">Edit</th>
+              <th className="text-center">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -62,13 +87,20 @@ const MyJob = () => {
                   <td>{myjob.category}</td>
                   <td>{myjob.vacancy}</td>
                   <td>{myjob.salary}</td>
-                  <td>Edit</td>
-                  <td>Delete</td>
+                  <td className="text-center">
+                    <label onClick={()=>handleModalId(myjob._id)}htmlFor="my-modal-3" ><FontAwesomeIcon className="text-blue-600" icon={faEdit}/></label >
+                  </td>
+                  <td className="text-center">
+                    <button onClick={()=>handleDelete(myjob._id)}><FontAwesomeIcon className="text-red-500" icon={faTrash}/></button>
+                  </td>
                 </tr>
               </>
             ))}
           </tbody>
         </table>
+        <Update
+         modalJob={modalJob}
+        ></Update>
       </div>
     </div>
   );
